@@ -5,7 +5,7 @@ import {
     TableContainer,
     TableHead,
     TableRow,
-} from "@material-ui/core";
+} from "@mui/material";
 import {Point} from '../Plot/Plot'
 
 interface CustomTableProps {

@@ -28,6 +28,7 @@ interface PlotProps {
 
 export const Plot = ({ data, height }: PlotProps): JSX.Element => {
   return (
+    // FlexibleXYPlot should be avoided in favor of FlexibleWidthXYPlot
     // <FlexibleXYPlot {...{ xDomain, yDomain }}>
     // I'm not sure why xDomain and yDomain are necessary. 
     <FlexibleWidthXYPlot height={ height ? height : defaultHeight } yPadding={5}>

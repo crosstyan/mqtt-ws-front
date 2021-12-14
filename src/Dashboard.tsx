@@ -3,8 +3,10 @@ import clsx from "clsx";
 import { Plot, Point } from "./components/Plot/Plot";
 import { CustomTable } from "./components/Table/Table";
 import { styles } from "./style"
-import { makeStyles, Theme } from "@material-ui/core/styles";
-import { Styles } from "@material-ui/core/styles/withStyles";
+import { Theme } from "@mui/material/styles";
+
+import { Styles } from '@mui/styles';
+import makeStyles from '@mui/styles/makeStyles';
 
 import {
   CssBaseline,
@@ -32,14 +34,22 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-} from "@material-ui/core";
-import MenuIcon from "@material-ui/icons/Menu";
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
 import {
   ChevronLeft as ChevronLeftIcon,
   Notifications as NotificationsIcon,
   Dashboard as DashboardIcon,
   Star
-} from "@material-ui/icons";
+} from "@mui/icons-material";
+import { ThemeProvider, StyledEngineProvider, createTheme } from '@mui/system';
+
+
+declare module '@mui/styles/defaultTheme' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface DefaultTheme extends Theme {}
+}
+
 
 const url = 'ws://127.0.0.1:8080/ws'
 const ws = new WebSocket(url);
@@ -130,7 +140,7 @@ export default function Dashboard() {
               classes.menuButton,
               open && classes.menuButtonHidden
             )}
-          >
+            size="large">
             <MenuIcon />
           </IconButton>
           <Typography
@@ -153,7 +163,7 @@ export default function Dashboard() {
         open={open}
       >
         <div className={classes.toolbarIcon}>
-          <IconButton onClick={handleDrawerClose}>
+          <IconButton onClick={handleDrawerClose} size="large">
             <ChevronLeftIcon />
           </IconButton>
         </div>
@@ -193,9 +203,15 @@ export default function Dashboard() {
                 <CustomTable rows={data} />
               </Paper>
             </Grid>
+            {/* Chart */}
+            <Grid item xs={12} md={8} lg={9}>
+              <Paper className={paperClass}>
+                <Plot data={data} />
+              </Paper>
+            </Grid>
           </Grid>
         </Container>
       </main>
     </div>
-  )
+  );
 }
