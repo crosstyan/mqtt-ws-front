@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import clsx from "clsx";
 import { Plot, Point } from "./components/Plot/Plot";
+import { CustomTable } from "./components/Table/Table";
 import { styles } from "./style"
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import { Styles } from "@material-ui/core/styles/withStyles";
@@ -25,6 +26,12 @@ import {
   ListItemIcon,
   ListItem,
   ListItemText,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import {
@@ -45,13 +52,13 @@ interface MQTTMsg {
   payload: string;
 }
 
-interface DashboardProps {}
+interface DashboardProps { }
 export const useStyles = makeStyles<Theme, DashboardProps>(styles as Styles<Theme, DashboardProps>);
 
 export default function Dashboard() {
   const [open, setOpen] = useState(false);
   const [darkState, setDarkState] = useState(false);
-  const [data, setData] = useState<Point[]>([{x: Date.now(), y:0}]);
+  const [data, setData] = useState<Point[]>([{ x: Date.now(), y: 0 }]);
   let tempData: Point[] = [];
   const PLOT_LENGTH = 10;
 
@@ -62,14 +69,14 @@ export default function Dashboard() {
         const parsed: MQTTMsg = JSON.parse(msg)
         console.log(parsed)
         if (parsed.topic === "temperature") {
-          const newPt = {x: Date.now(), y: parseFloat(parsed.payload)}
+          const newPt = { x: Date.now(), y: parseFloat(parsed.payload) }
           // https://stackoverflow.com/questions/55565444/how-to-register-event-with-useeffect-hooks
           // I don't know why but the last data must be used
           setData((d) => {
-            if(d.length > PLOT_LENGTH) {
+            if (d.length > PLOT_LENGTH) {
               const temp = d.slice((-PLOT_LENGTH), -1)
               // for some reason slice is not including the last element
-              temp.push(d.slice(-1)[0]) 
+              temp.push(d.slice(-1)[0])
               // console.log([...temp, newPt])
               return [...temp, newPt]
             } else {
@@ -99,6 +106,12 @@ export default function Dashboard() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  // @ts-ignore
+  function createData(name, calories, fat, carbs, protein) {
+    return { name, calories, fat, carbs, protein };
+  }
+
   const classes = useStyles();
   const paperClass = clsx(classes.paper);
   return (
@@ -177,13 +190,7 @@ export default function Dashboard() {
             {/* Recent Deposits */}
             <Grid item xs={12} md={4} lg={3}>
               <Paper className={paperClass}>
-                <h1>No</h1>
-              </Paper>
-            </Grid>
-            {/* Recent Orders */}
-            <Grid item xs={12}>
-              <Paper className={classes.paper}>
-                <h1>Idea</h1>
+                <CustomTable rows={data} />
               </Paper>
             </Grid>
           </Grid>

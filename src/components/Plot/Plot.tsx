@@ -1,3 +1,4 @@
+import { height } from "@mui/system";
 import {
   FlexibleXYPlot,
   FlexibleWidthXYPlot,
@@ -18,19 +19,18 @@ export interface Point {
   y: number
 }
 
+const defaultHeight = 300;
+
 interface PlotProps {
   data: Point[]
+  height?: number
 }
 
-export const Plot = ({ data }: PlotProps): JSX.Element => {
-  // const xDomain = [-1, 3]
-  // const yDomain = [-5, 15]
-  // const verticalTickValues: number[] = []
-  // const horizontalTickValues = [0]
+export const Plot = ({ data, height }: PlotProps): JSX.Element => {
   return (
     // <FlexibleXYPlot {...{ xDomain, yDomain }}>
     // I'm not sure why xDomain and yDomain are necessary. 
-    <FlexibleWidthXYPlot height={300} yPadding={5}>
+    <FlexibleWidthXYPlot height={ height ? height : defaultHeight } yPadding={5}>
       <VerticalGridLines />
       <HorizontalGridLines />
       <XAxis
