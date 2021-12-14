@@ -2,6 +2,12 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Config
+
+```powershell
+$env:NODE_OPTIONS="--openssl-legacy-provider"
+```
+
 ## Available Scripts
 
 In the project directory, you can run:
@@ -44,3 +50,23 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+
+## Example
+
+### CodeSandbox
+
+These wonderful examples are from [here](https://codesandbox.io/search?query=&page=1&configure%5BhitsPerPage%5D=12&refinementList%5Bnpm_dependencies.dependency%5D%5B0%5D=%40material-ui%2Fcore&refinementList%5Btemplate%5D%5B0%5D=create-react-app).
+
+- [Learn React & Material UI - CodeSandbox](https://codesandbox.io/s/m76rzooo3p)
+- [react-material-ui-pomodoro-tomatoe-timer - CodeSandbox](https://codesandbox.io/s/github/Caruso33/pomodoR/tree/master/)
+- [Navigation Rail Demo - CodeSandbox](https://codesandbox.io/s/navigation-rail-demo-ub1s9?file=/index.tsx)
+- [Bulk actions with modes - CodeSandbox](https://codesandbox.io/s/wz727jn5w5)
+- [react-material-dashboard - CodeSandbox](https://codesandbox.io/s/github/ordazgustavo/react-material-dashboard/tree/master/)
+- [Basic React with Material UI. Theme with colour palette, typography, component props and restyling - CodeSandbox](https://codesandbox.io/s/basic-react-with-material-ui-theme-with-colour-palette-typography-component-props-and-restyling-q742p)
+- [MaterialUI Responsive AppBar - CodeSandbox](https://codesandbox.io/s/64kr4k1lww)
+- [dark-theme-switch - CodeSandbox](https://codesandbox.io/s/dark-theme-switch-tp37c)
+- [Material demo - CodeSandbox](https://codesandbox.io/s/material-demo-929km?file=/index.tsx)
+
+### GitHub
+
+- [uds5501/dashboard-switch-themes: Created with CodeSandbox](https://github.com/uds5501/dashboard-switch-themes)
