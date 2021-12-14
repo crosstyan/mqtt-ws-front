@@ -63,7 +63,6 @@ export default function Dashboard() {
         console.log(parsed)
         if (parsed.topic === "temperature") {
           const newPt = {x: Date.now(), y: parseFloat(parsed.payload)}
-          tempData.push(newPt)
           // https://stackoverflow.com/questions/55565444/how-to-register-event-with-useeffect-hooks
           // I don't know why but the last data must be used
           setData((d) => {
@@ -74,7 +73,8 @@ export default function Dashboard() {
               // console.log([...temp, newPt])
               return [...temp, newPt]
             } else {
-              return [...d, newPt]
+              tempData.push(newPt)
+              return [...tempData]
             }
           })
           // console.log(tempData)

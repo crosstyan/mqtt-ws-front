@@ -7,6 +7,8 @@ import {
   YAxis,
   VerticalGridLines,
   HorizontalGridLines,
+  AreaSeries,
+  Hint,
   LineSeries,
 } from "react-vis";
 import 'react-vis/dist/style.css';
@@ -39,17 +41,20 @@ export const Plot = ({ data }: PlotProps): JSX.Element => {
         // use GB to enable 24h by default
         // https://stackoverflow.com/questions/22347521/change-time-format-to-24-hours-in-javascript
         tickFormat={function tickFormat(d) { return new Date(d).toLocaleTimeString('en-GB') }} />
-        
+
       <YAxis
         attr="y"
         attrAxis="x"
         orientation="left" />
-      <LineSeries
+
+      <AreaSeries
         // const MODE = ['noWobble', 'gentle', 'wobbly', 'stiff'];
         animation='noWobble'
+        // http://bl.ocks.org/d3indepth/b6d4845973089bc1012dec1674d3aff8
+        // https://github.com/d3/d3-shape#curves
+        curve="curveMonotoneX"
         data={data}
-        opacity={1}
-        strokeStyle="solid"
+        opacity={0.6}
       />
     </FlexibleWidthXYPlot>
   )
