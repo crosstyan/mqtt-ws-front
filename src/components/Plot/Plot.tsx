@@ -35,12 +35,18 @@ export const Plot = ({ data }: PlotProps): JSX.Element => {
         attr="x"
         attrAxis="y"
         orientation="bottom"
-        tickFormat={function tickFormat(d) { return new Date(d).toLocaleDateString() }} />
+        tickLabelAngle={-20}
+        // use GB to enable 24h by default
+        // https://stackoverflow.com/questions/22347521/change-time-format-to-24-hours-in-javascript
+        tickFormat={function tickFormat(d) { return new Date(d).toLocaleTimeString('en-GB') }} />
+        
       <YAxis
         attr="y"
         attrAxis="x"
         orientation="left" />
       <LineSeries
+        // const MODE = ['noWobble', 'gentle', 'wobbly', 'stiff'];
+        animation='noWobble'
         data={data}
         opacity={1}
         strokeStyle="solid"

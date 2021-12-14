@@ -4,5 +4,5 @@ while(1) {
   mosquitto_pub -t "temperature" -m $temp
   Write-Host("Temperature: $temp, Humidity: $hum")
   # mosquitto_pub -t "humidity" -m $hum
-  sleep 3
+  sleep 1
 }
