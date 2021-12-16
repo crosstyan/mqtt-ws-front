@@ -6,7 +6,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 `@material-ui/core` is the version 4 of [Material-UI](https://v4.mui.com/), which is still used in many code.
 
-But if you want to the latest version of [MUI](https://mui.com/zh/) (`@mui/material`), you should upgrade it. Confusingly, They used different package name. 
+But if you want to the latest version of [MUI](https://mui.com/zh/) (`@mui/material`), you should upgrade it. Confusingly, They used different package name.
 
 ## Config
 

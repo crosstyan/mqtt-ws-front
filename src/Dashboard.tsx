@@ -2,11 +2,9 @@ import React, { useEffect, useState } from "react";
 import clsx from "clsx";
 import { Plot, Point } from "./components/Plot/Plot";
 import { CustomTable } from "./components/Table/Table";
-import { styles } from "./style"
 import { Theme } from "@mui/material/styles";
+import { makeStyles } from "./makeStyles";
 
-import { Styles } from '@mui/styles';
-import makeStyles from '@mui/styles/makeStyles';
 
 import {
   CssBaseline,
@@ -44,13 +42,6 @@ import {
 } from "@mui/icons-material";
 import { ThemeProvider, StyledEngineProvider, createTheme } from '@mui/system';
 
-
-declare module '@mui/styles/defaultTheme' {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  interface DefaultTheme extends Theme {}
-}
-
-
 const url = 'ws://127.0.0.1:8080/ws'
 const ws = new WebSocket(url);
 
@@ -62,13 +53,95 @@ interface MQTTMsg {
   payload: string;
 }
 
-interface DashboardProps { }
-export const useStyles = makeStyles<Theme, DashboardProps>(styles as Styles<Theme, DashboardProps>);
+
+const drawerWidth = 240;
+// FIXME: CSS Priority
+// Is overridden by Mui** classes
+// @ts-ignore I don't know how to fix this, but it works
+const useStyles = makeStyles()((theme: Theme) => ({
+  "root": {
+    display: "flex"
+  },
+  "toolbar": {
+    paddingRight: 24 // keep right padding when drawer closed
+  },
+  "toolbarIcon": {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    padding: "0 8px",
+    ...theme.mixins.toolbar
+  },
+  "appBar": {
+    zIndex: theme.zIndex.drawer + 1,
+    transition: theme.transitions.create(["width", "margin"], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen
+    })
+  },
+  "appBarShift": {
+    marginLeft: drawerWidth,
+    width: `calc(100% - ${drawerWidth}px)`,
+    transition: theme.transitions.create(["width", "margin"], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen
+    })
+  },
+  "menuButton": {
+    marginRight: 36
+  },
+  "menuButtonHidden": {
+    display: "none"
+  },
+  "title": {
+    flexGrow: 1
+  },
+  "drawerPaper": {
+    position: "relative",
+    whiteSpace: "nowrap",
+    width: drawerWidth,
+    transition: theme.transitions.create("width", {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen
+    })
+  },
+  "drawerPaperClose": {
+    overflowX: "hidden",
+    transition: theme.transitions.create("width", {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen
+    }),
+    width: theme.spacing(7),
+    [theme.breakpoints.up("sm")]: {
+      width: theme.spacing(9)
+    }
+  },
+  "appBarSpacer": theme.mixins.toolbar,
+  "content": {
+    flexGrow: 1,
+    height: "100vh",
+    overflow: "auto"
+  },
+  "container": {
+    paddingTop: theme.spacing(4),
+    paddingBottom: theme.spacing(4)
+  },
+  "paper": {
+    padding: theme.spacing(2),
+    display: "flex",
+    overflow: "auto",
+    flexDirection: "column"
+  },
+  "fixedHeight": {
+    height: 240
+  }
+}));
 
 export default function Dashboard() {
   const [open, setOpen] = useState(false);
   const [darkState, setDarkState] = useState(false);
   const [data, setData] = useState<Point[]>([{ x: Date.now(), y: 0 }]);
+  const {classes, cx}  = useStyles();
   let tempData: Point[] = [];
   const PLOT_LENGTH = 10;
 
@@ -122,7 +195,6 @@ export default function Dashboard() {
     return { name, calories, fat, carbs, protein };
   }
 
-  const classes = useStyles();
   const paperClass = clsx(classes.paper);
   return (
     <div id="Dashboard" className={classes.root}>
