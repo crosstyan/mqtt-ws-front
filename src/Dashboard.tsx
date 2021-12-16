@@ -4,6 +4,7 @@ import { Plot, Point } from "./components/Plot/Plot";
 import { CustomTable } from "./components/Table/Table";
 import { Theme } from "@mui/material/styles";
 import { makeStyles } from "./makeStyles";
+import Masonry from '@mui/lab/Masonry';
 
 
 import {
@@ -140,9 +141,11 @@ const useStyles = makeStyles()((theme: Theme) => ({
 export default function Dashboard() {
   const [open, setOpen] = useState(false);
   const [darkState, setDarkState] = useState(false);
-  const [data, setData] = useState<Point[]>([{ x: Date.now(), y: 0 }]);
-  const {classes, cx}  = useStyles();
-  let tempData: Point[] = [];
+  const [tmpData, setTmpData] = useState<Point[]>([{ x: Date.now(), y: 0 }]);
+  const [hmdData, setHmdData] = useState<Point[]>([{ x: Date.now(), y: 0 }]);
+  const { classes, cx } = useStyles();
+  let tmpTemp: Point[] = [];
+  let hmdTemp: Point[] = [];
   const PLOT_LENGTH = 10;
 
   useEffect(() => {
@@ -155,7 +158,7 @@ export default function Dashboard() {
           const newPt = { x: Date.now(), y: parseFloat(parsed.payload) }
           // https://stackoverflow.com/questions/55565444/how-to-register-event-with-useeffect-hooks
           // I don't know why but the last data must be used
-          setData((d) => {
+          setTmpData((d) => {
             if (d.length > PLOT_LENGTH) {
               const temp = d.slice((-PLOT_LENGTH), -1)
               // for some reason slice is not including the last element
@@ -163,11 +166,24 @@ export default function Dashboard() {
               // console.log([...temp, newPt])
               return [...temp, newPt]
             } else {
-              tempData.push(newPt)
-              return [...tempData]
+              tmpTemp.push(newPt)
+              return [...tmpTemp]
             }
           })
           // console.log(tempData)
+        } else if (parsed.topic === "humidity") {
+          // TODO: refactor this since it's the same as above
+          const newPt = { x: Date.now(), y: parseFloat(parsed.payload) }
+          setHmdData((d) => {
+            if (d.length > PLOT_LENGTH) {
+              const temp = d.slice((-PLOT_LENGTH), -1)
+              temp.push(d.slice(-1)[0])
+              return [...temp, newPt]
+            } else {
+              hmdTemp.push(newPt)
+              return [...hmdTemp]
+            }
+          })
         }
       } catch (e) {
         console.error(e)
@@ -262,26 +278,24 @@ export default function Dashboard() {
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
-          <Grid container spacing={3}>
-            {/* Chart */}
-            <Grid item xs={12} md={8} lg={9}>
+          <Masonry columns={{xs:1, md:2}} spacing={{xs:1, md:2}}>
               <Paper className={paperClass}>
-                <Plot data={data} />
+                <Typography variant="h5" component="div">Temperature</Typography>
+                <Plot data={tmpData} />
               </Paper>
-            </Grid>
-            {/* Recent Deposits */}
-            <Grid item xs={12} md={4} lg={3}>
               <Paper className={paperClass}>
-                <CustomTable rows={data} />
+                <Typography variant="h5" component="div">Temperature</Typography>
+                <CustomTable rows={tmpData} />
               </Paper>
-            </Grid>
-            {/* Chart */}
-            <Grid item xs={12} md={8} lg={9}>
               <Paper className={paperClass}>
-                <Plot data={data} />
+                <Typography variant="h5" component="div">Humidity</Typography>
+                <Plot data={hmdData} />
               </Paper>
-            </Grid>
-          </Grid>
+              <Paper className={paperClass}>
+                <Typography variant="h5" component="div">Humidity</Typography>
+                <CustomTable rows={hmdData} />
+              </Paper>
+          </Masonry>
         </Container>
       </main>
     </div>
