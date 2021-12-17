@@ -6,7 +6,7 @@ import {
     TableHead,
     TableRow,
 } from "@mui/material";
-import {Point} from '../Plot/Plot'
+import {Point} from './plot'
 
 interface CustomTableProps {
   rows: Point[]
@@ -14,7 +14,7 @@ interface CustomTableProps {
 
 function tickFormat(d:number):string { return `${new Date(d).toLocaleDateString('zh-CN')} ${new Date(d).toLocaleTimeString('en-GB')}`  }
 
-export const CustomTable = ({ rows }: CustomTableProps) => {
+export function CustomTable ({ rows }: CustomTableProps) {
   return (
     <Table>
       <TableHead>
