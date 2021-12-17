@@ -75,11 +75,20 @@ export default function Dashboard() {
   const [tmpData, setTmpData] = useState<Point[]>([{ x: Date.now(), y: 0 }]);
   const [hmdData, setHmdData] = useState<Point[]>([{ x: Date.now(), y: 0 }]);
   const { classes, cx } = useStyles();
-  // value for tab
+  // value for tabs
   const [value, setValue] = React.useState('1');
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
+  // value for selectedIndex of list
+  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const handleListItemClick = (
+    event: React.MouseEvent<HTMLElement, MouseEvent>,
+    index: number,
+  ) => {
+    setSelectedIndex(index);
+  };
+
   let tmpTemp: Point[] = [];
   let hmdTemp: Point[] = [];
   const PLOT_LENGTH = 10;
@@ -188,8 +197,12 @@ export default function Dashboard() {
         <Divider />
         <List>
           <ListItem button component={RouterLink}
+            selected={selectedIndex === 0}
             to="/"
-            onClick={handleDrawerClose}>
+            onClick={(event: React.MouseEvent<HTMLElement, MouseEvent>)=> {
+              handleDrawerClose()
+              handleListItemClick(event, 0)
+            }}>
             <ListItemIcon>
               <Timeline />
             </ListItemIcon>
@@ -198,7 +211,11 @@ export default function Dashboard() {
           <ListItem button
             component={RouterLink}
             to="/history"
-            onClick={handleDrawerClose}>
+            selected={selectedIndex === 1}
+            onClick={(event: React.MouseEvent<HTMLElement, MouseEvent>)=> {
+              handleDrawerClose()
+              handleListItemClick(event, 1)
+            }}>
             <ListItemIcon>
               <History />
             </ListItemIcon>
