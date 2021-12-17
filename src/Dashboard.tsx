@@ -13,31 +13,18 @@ import { getUniqueListBy } from "./utils/utils"
 
 
 import {
-  CssBaseline,
-  Switch,
   Drawer,
   Box,
   AppBar,
   Toolbar,
   List,
-  Avatar,
   Typography,
   Divider,
   IconButton,
-  Badge,
   Container,
-  Grid,
-  Paper,
-  Link,
   ListItemIcon,
   ListItem,
   ListItemText,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import {
@@ -77,32 +64,15 @@ export default function Dashboard() {
   ) => {
     setSelectedIndex(index);
   };
+  let location = useLocation();
+  useEffect(() => {
+    if (location.pathname === "/history") {
+      setSelectedIndex(1);
+    }
+  }, [location])
 
-  const HistoryPage = () => {
-    useEffect(() => {
-      setSelectedIndex(1)
-    }, [])
-    return (
-      <div id="history">
-        <TabContext value={value}>
-          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <TabList onChange={handleChange} aria-label="lab API tabs example">
-              <Tab label="Temperature" value="1" />
-              <Tab label="Humidity" value="2" />
-            </TabList>
-          </Box>
-          <TabPanel sx={{ padding: '0px', paddingTop: '12px' }} value="1">
-            <HistoryChart topic="temperature" />
-          </TabPanel>
-          <TabPanel sx={{ padding: '0px', paddingTop: '12px' }} value="2">
-            <HistoryChart topic="humidity" />
-          </TabPanel>
-        </TabContext>
-      </div>
-    )
-  }
-
-
+  // FIXME: I don't know why the animation is gone when the component is separated
+  // https://stackoverflow.com/questions/58397636/animation-not-triggering-when-using-material-ui
 
   const handleThemeChange = () => {
     setDarkState(!darkState);
@@ -176,6 +146,7 @@ export default function Dashboard() {
             component={RouterLink}
             to="/history"
             selected={selectedIndex === 1}
+            // FIXME: find a better way to do this
             onClick={(event: React.MouseEvent<HTMLElement, MouseEvent>) => {
               handleDrawerClose()
               handleListItemClick(event, 1)
@@ -193,7 +164,22 @@ export default function Dashboard() {
         <Container maxWidth="lg" className={classes.container}>
           <Routes>
             <Route path="/" element={<RealtimeChart />} />
-            <Route path="/history" element={<HistoryPage />} />
+            <Route path="/history" element={
+              <TabContext value={value}>
+                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                  <TabList onChange={handleChange} aria-label="lab API tabs example">
+                    <Tab label="Temperature" value="1" />
+                    <Tab label="Humidity" value="2" />
+                  </TabList>
+                </Box>
+                <TabPanel sx={{ padding: '0px', paddingTop: '12px' }} value="1">
+                  <HistoryChart topic="temperature" />
+                </TabPanel>
+                <TabPanel sx={{ padding: '0px', paddingTop: '12px' }} value="2">
+                  <HistoryChart topic="humidity" />
+                </TabPanel>
+              </TabContext>
+            } />
           </Routes>
         </Container>
       </main>
