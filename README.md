@@ -8,6 +8,10 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 But if you want to the latest version of [MUI](https://mui.com/zh/) (`@mui/material`), you should upgrade it. Confusingly, They used different package name.
 
+Weirdly, [`useStyles`](https://mui.com/styles/basics/) can't be migrated to `@mui` correctly. Although the [Migration from v4 to v5](https://mui.com/guides/migration-v4/#main-content) guide is very good, but it's still not working.
+
+I choose to use [garronej/tss-react](https://github.com/garronej/tss-react) to solve this problem, which seems to be a `useStyles` implementation by [Emotion](https://emotion.sh/docs/introduction)
+
 ## Config
 
 You have to add `--openssl-legacy-provider` to `NODE_OPTIONS` environment variable if you're running Node.js 17 or higher. Here is how to do it in PowerShell. 
