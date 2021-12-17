@@ -171,7 +171,6 @@ export default function Dashboard() {
           >
             IOT Dashboard
           </Typography>
-          <Switch checked={darkState} onChange={handleThemeChange} />
         </Toolbar>
       </AppBar>
       <Drawer

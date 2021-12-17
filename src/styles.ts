@@ -35,10 +35,16 @@ export const useStyles = makeStyles()((theme: Theme) => ({
     })
   },
   "menuButton": {
-    marginRight: 36
+    marginRight: 36,
+    opacity: 1,
+    transition: theme.transitions.create(["opacity",], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen
+    })
   },
   "menuButtonHidden": {
-    display: "none"
+    // display: "none"
+    opacity: 0,
   },
   "title": {
     flexGrow: 1
