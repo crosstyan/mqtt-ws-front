@@ -59,8 +59,10 @@ export const useStyles = makeStyles()((theme: Theme) => ({
       duration: theme.transitions.duration.leavingScreen
     }),
     width: theme.spacing(7),
+    display: "none",
     [theme.breakpoints.up("sm")]: {
-      width: theme.spacing(9)
+      width: theme.spacing(9),
+      display: "flex",
     }
   },
   "appBarSpacer": theme.mixins.toolbar,

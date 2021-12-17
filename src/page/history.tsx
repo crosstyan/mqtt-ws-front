@@ -7,6 +7,7 @@ import Masonry from '@mui/lab/Masonry';
 import { MQTTTopic } from "../Dashboard"
 import {
   Typography,
+  Button,
   Divider,
   Paper,
   Stack,
@@ -22,21 +23,90 @@ interface DataQuery {
   // RFC3399
   end?: string;
 }
-const TimeFormat = 'YYYY-MM-DDTHH:mm'
+interface ResponseRecord {
+  payload: number;
+  timestamp: string;
+}
+interface ResponseMsg {
+  records: ResponseRecord[];
+}
 
-export function HistoryChart() {
+// datetime-local
+function dateTimeLocalToISO(date: string): string {
+  const TimeFormat = 'YYYY-MM-DDTHH:mm'
+  return moment(date, TimeFormat).toISOString()
+}
+function dateToDatetimeLocal(date: string | number): string {
+  const TimeFormat = 'YYYY-MM-DDTHH:mm'
+  return moment(date).format(TimeFormat)
+}
+function respToPoint(res: ResponseRecord): Point{
+  return {
+    x: moment(res.timestamp).valueOf(),
+    y: res.payload
+  }
+}
+
+interface HistoryChartProps {
+  topic: MQTTTopic;
+}
+
+export function HistoryChart({topic}: HistoryChartProps) {
   const { classes, cx } = useStyles();
   const paperClass = clsx(classes.paper);
-  const [data, setData] = useState<Point[]>([])
+  const [data, setData] = useState<Point[]>([{ x: Date.now(), y: 0}])
   // RFC3399
-  const [startDate, setStartDate] = useState<string>(moment(new Date()).format(TimeFormat))
+  const [startDate, setStartDate] = useState<string>(dateToDatetimeLocal(Date.now()))
   const [endDate, setEndDate] = useState<string|null>(null)
   const [page, setPage] = useState<number>(1)
-  const handleStartDateChange = ()=>{
-    queryData("temperature", page)
-  }
+  const [isMore, setIsMore] = useState<boolean>(false)
   // TODO: refactor this function to make it out of this component
-  const queryData = (topic: MQTTTopic, page = 1) => {
+  const queryFirstData = (topic: MQTTTopic, startDate:string, endDate:string|null = null) => {
+    let queryPath: string
+    switch (topic) {
+      case 'temperature':
+        queryPath = config.tmpPath
+        break;
+      case 'humidity':
+        queryPath = config.hmdPath
+        break
+      default:
+        throw new Error(`Unknown topic: ${topic}`)
+    }
+    const url = `http://${config.addr}${queryPath}`
+    const query:DataQuery = endDate == null ? {
+        page: 1,
+        start: dateTimeLocalToISO(startDate),
+    } : {
+        page: 1,
+        start: dateTimeLocalToISO(startDate),
+        end: dateTimeLocalToISO(endDate),
+    }
+    console.log(query)
+    const rawResponse = fetch(url, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(query)
+    }).then(res => res.json().then(data => {
+      console.log(data)
+      const ptsData = (data as ResponseMsg).records.map(respToPoint)
+      console.log(ptsData)
+      if (ptsData.length > 0) {
+        setData(ptsData)
+        setIsMore(true)
+        // setPage to 2 then
+        setPage(page => 2)
+      } else {
+        setData([{x: Date.now(), y: 0}])
+        setIsMore(false)
+      }
+    }))
+  }
+  // TODO: refactor this function to avoid copy and paste
+  const queryMoreData = (topic: MQTTTopic, startDate:string, endDate:string|null = null) => {
     let queryPath: string
     switch (topic) {
       case 'temperature':
@@ -51,11 +121,11 @@ export function HistoryChart() {
     const url = `http://${config.addr}${queryPath}`
     const query:DataQuery = endDate == null ? {
         page: page,
-        start: moment(startDate, TimeFormat).toISOString(),
+        start: dateTimeLocalToISO(startDate),
     } : {
         page: page,
-        start: moment(startDate, TimeFormat).toISOString(),
-        end: moment(endDate, TimeFormat).toISOString()
+        start: dateTimeLocalToISO(startDate),
+        end: dateTimeLocalToISO(endDate),
     }
     console.log(query)
     const rawResponse = fetch(url, {
@@ -67,18 +137,32 @@ export function HistoryChart() {
       body: JSON.stringify(query)
     }).then(res => res.json().then(data => {
       console.log(data)
+      const ptsData = (data as ResponseMsg).records.map(respToPoint)
+      console.log(ptsData)
+      if (ptsData.length > 0) {
+        setData(data => [...data, ...ptsData])
+        setIsMore(true)
+        // setPage to 1
+        setPage(page => page + 1)
+      } else {
+        setIsMore(false)
+      }
     }))
   }
-  useEffect(() => {
-    console.log('startDate', startDate)
-  })
+  const More = ({topic}:HistoryChartProps)=>{
+    if(isMore){
+      return(<Button onClick={()=>{queryMoreData(topic, startDate, endDate)}}>Get More</Button>)
+    } else {
+      return(<Button disabled onClick={()=>{queryMoreData(topic, startDate, endDate)}}>No More</Button>)
+    }
+}
+
   return (
     <Masonry columns={{ xs: 1, md: 2 }} spacing={{ xs: 1, md: 2 }}>
       <Paper className={paperClass}>
-        <Typography variant="h5" component="div">Temperature</Typography>
         <Stack
           direction={{ xs: "column", md: "row" }}
-          spacing={{ xs: 2, md: 4 }}
+          spacing={{ xs: 1, md: 2 }}
         >
           <TextField
             id="date-start"
@@ -90,8 +174,8 @@ export function HistoryChart() {
               shrink: true,
             }}
             onChange={(e)=>{
-              setStartDate(e.target.value)
-              queryData("temperature", page)
+              setStartDate(date => e.target.value)
+              queryFirstData(topic, e.target.value, endDate)
             }}
           />
           <TextField
@@ -99,24 +183,28 @@ export function HistoryChart() {
             label="End"
             type="datetime-local"
             defaultValue={endDate}
+            inputProps={{
+              min: startDate,
+            }}
             sx={{ width: 250 }}
             InputLabelProps={{
               shrink: true,
             }}
             onChange={(e)=>{
-              setStartDate(e.target.value)
-              queryData("temperature", page)
+              setEndDate(date => e.target.value)
+              queryFirstData(topic, startDate, e.target.value)
             }}
           />
         </Stack>
       </Paper>
       <Paper className={paperClass}>
-        <Typography variant="h5" component="div">Temperature</Typography>
-        <Plot data={data} />
+        <Plot data={data} format={(date)=>{
+          return moment(date).format("HH:mm:ss")
+        }}/>
       </Paper>
       <Paper className={paperClass}>
-        <Typography variant="h5" component="div">Temperature</Typography>
         <CustomTable rows={data} />
+        <More topic={topic}/>
       </Paper>
     </Masonry>
   )

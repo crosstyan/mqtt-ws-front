@@ -5,6 +5,11 @@ import { Realtime as RealtimeChart } from "./page/realtime";
 import { HistoryChart } from "./page/history";
 import { useStyles } from "./styles"
 import { config } from "./config";
+import Tab from '@mui/material/Tab';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
+import TabPanel from '@mui/lab/TabPanel';
+
 
 import {
   CssBaseline,
@@ -70,6 +75,11 @@ export default function Dashboard() {
   const [tmpData, setTmpData] = useState<Point[]>([{ x: Date.now(), y: 0 }]);
   const [hmdData, setHmdData] = useState<Point[]>([{ x: Date.now(), y: 0 }]);
   const { classes, cx } = useStyles();
+  // value for tab
+  const [value, setValue] = React.useState('1');
+  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+    setValue(newValue);
+  };
   let tmpTemp: Point[] = [];
   let hmdTemp: Point[] = [];
   const PLOT_LENGTH = 10;
@@ -178,18 +188,18 @@ export default function Dashboard() {
         </div>
         <Divider />
         <List>
-          <ListItem button component={RouterLink} 
-          to="/" 
-          onClick={handleDrawerClose}>
+          <ListItem button component={RouterLink}
+            to="/"
+            onClick={handleDrawerClose}>
             <ListItemIcon>
               <Timeline />
             </ListItemIcon>
             <ListItemText primary="Realtime" />
           </ListItem>
-          <ListItem button 
-          component={RouterLink} 
-          to="/history"
-          onClick={handleDrawerClose}>
+          <ListItem button
+            component={RouterLink}
+            to="/history"
+            onClick={handleDrawerClose}>
             <ListItemIcon>
               <History />
             </ListItemIcon>
@@ -202,8 +212,25 @@ export default function Dashboard() {
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
           <Routes>
-            <Route path="/" element={<RealtimeChart tmpData={tmpData} hmdData={hmdData}/>} />
-            <Route path="/history" element={<HistoryChart/>} />
+            <Route path="/" element={<RealtimeChart tmpData={tmpData} hmdData={hmdData} />} />
+            <Route path="/history" element={
+              <div id="history">
+                <TabContext value={value}>
+                  <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                    <TabList onChange={handleChange} aria-label="lab API tabs example">
+                      <Tab label="Temperature" value="1" />
+                      <Tab label="Humidity" value="2" />
+                    </TabList>
+                  </Box>
+                  <TabPanel sx={{padding:'0px', paddingTop:'12px'}} value="1">
+                    <HistoryChart topic="temperature"/>
+                  </TabPanel>
+                  <TabPanel sx={{padding:'0px', paddingTop:'12px'}} value="2">
+                    <HistoryChart topic="humidity"/>
+                  </TabPanel>
+                </TabContext>
+              </div>
+            } />
           </Routes>
         </Container>
       </main>

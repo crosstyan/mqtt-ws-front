@@ -24,9 +24,11 @@ const defaultHeight = 300;
 interface PlotProps {
   data: Point[]
   height?: number
+  format?: (date:number) => string
 }
+function tickFormat(date:number):string { return new Date(date).toLocaleTimeString('en-GB') }
 
-export const Plot = ({ data, height }: PlotProps): JSX.Element => {
+export const Plot = ({ data, height, format=tickFormat }: PlotProps): JSX.Element => {
   return (
     // FlexibleXYPlot should be avoided in favor of FlexibleWidthXYPlot
     // <FlexibleXYPlot {...{ xDomain, yDomain }}>
@@ -41,7 +43,7 @@ export const Plot = ({ data, height }: PlotProps): JSX.Element => {
         tickLabelAngle={-20}
         // use GB to enable 24h by default
         // https://stackoverflow.com/questions/22347521/change-time-format-to-24-hours-in-javascript
-        tickFormat={function tickFormat(d) { return new Date(d).toLocaleTimeString('en-GB') }} />
+        tickFormat={format} />
 
       <YAxis
         attr="y"
