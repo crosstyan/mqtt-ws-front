@@ -1,4 +1,3 @@
-import './App.css';
 import Dashboard from './Dashboard'
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { StylesProvider } from '@mui/styles';
