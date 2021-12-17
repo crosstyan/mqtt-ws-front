@@ -14,6 +14,7 @@ import {
   TextField,
 } from "@mui/material";
 import {config} from "../config";
+import {getUniqueListBy} from "../utils/utils";
 import moment from "moment";
 
 interface DataQuery {
@@ -93,7 +94,6 @@ export function HistoryChart({topic}: HistoryChartProps) {
     }).then(res => res.json().then(data => {
       console.log(data)
       const ptsData = (data as ResponseMsg).records.map(respToPoint)
-      console.log(ptsData)
       if (ptsData.length > 0) {
         setData(ptsData)
         setIsMore(true)
@@ -138,11 +138,23 @@ export function HistoryChart({topic}: HistoryChartProps) {
     }).then(res => res.json().then(data => {
       console.log(data)
       const ptsData = (data as ResponseMsg).records.map(respToPoint)
-      console.log(ptsData)
+      // console.log(ptsData)
       if (ptsData.length > 0) {
-        setData(data => [...data, ...ptsData])
+        // COMPLETE: Encountered two children with the same key
+        // data is always sending so the pagination is not working correctly
+        // // Use set can solve such problems, since it make sure every object is unique
+        // Set is fucking useless here!
+        // https://stackoverflow.com/questions/2218999/how-to-remove-all-duplicates-from-an-array-of-objects
+        setData(data => {
+          const newAry = [...data, ...ptsData]
+          const uniqueAry = getUniqueListBy(newAry, 'x')
+          // sort descending
+          uniqueAry.sort((a, b) => b.x - a.x)
+          console.log(uniqueAry)
+          return uniqueAry
+        })
         setIsMore(true)
-        // setPage to 1
+        // setPage add 1
         setPage(page => page + 1)
       } else {
         setIsMore(false)

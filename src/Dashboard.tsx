@@ -9,6 +9,7 @@ import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
+import {getUniqueListBy} from "./utils/utils"
 
 
 import {
@@ -92,6 +93,29 @@ export default function Dashboard() {
   let tmpTemp: Point[] = [];
   let hmdTemp: Point[] = [];
   const PLOT_LENGTH = 10;
+  const HistoryPage = ()=>{
+    useEffect(() => {
+      setSelectedIndex(1)
+    }, [])
+    return(
+            <div id="history">
+        <TabContext value={value}>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <TabList onChange={handleChange} aria-label="lab API tabs example">
+              <Tab label="Temperature" value="1" />
+              <Tab label="Humidity" value="2" />
+            </TabList>
+          </Box>
+          <TabPanel sx={{padding:'0px', paddingTop:'12px'}} value="1">
+            <HistoryChart topic="temperature"/>
+          </TabPanel>
+          <TabPanel sx={{padding:'0px', paddingTop:'12px'}} value="2">
+            <HistoryChart topic="humidity"/>
+          </TabPanel>
+        </TabContext>
+      </div>
+    )
+  }
 
   useEffect(() => {
     ws.onmessage = (event) => {
@@ -112,6 +136,7 @@ export default function Dashboard() {
               return [...temp, newPt]
             } else {
               tmpTemp.push(newPt)
+              tmpTemp = getUniqueListBy(tmpTemp, "x")
               return [...tmpTemp]
             }
           })
@@ -126,6 +151,7 @@ export default function Dashboard() {
               return [...temp, newPt]
             } else {
               hmdTemp.push(newPt)
+              hmdTemp = getUniqueListBy(hmdTemp, "x")
               return [...hmdTemp]
             }
           })
@@ -229,24 +255,7 @@ export default function Dashboard() {
         <Container maxWidth="lg" className={classes.container}>
           <Routes>
             <Route path="/" element={<RealtimeChart tmpData={tmpData} hmdData={hmdData} />} />
-            <Route path="/history" element={
-              <div id="history">
-                <TabContext value={value}>
-                  <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                    <TabList onChange={handleChange} aria-label="lab API tabs example">
-                      <Tab label="Temperature" value="1" />
-                      <Tab label="Humidity" value="2" />
-                    </TabList>
-                  </Box>
-                  <TabPanel sx={{padding:'0px', paddingTop:'12px'}} value="1">
-                    <HistoryChart topic="temperature"/>
-                  </TabPanel>
-                  <TabPanel sx={{padding:'0px', paddingTop:'12px'}} value="2">
-                    <HistoryChart topic="humidity"/>
-                  </TabPanel>
-                </TabContext>
-              </div>
-            } />
+            <Route path="/history" element={<HistoryPage />} />
           </Routes>
         </Container>
       </main>
