@@ -39,7 +39,7 @@ export function CustomTable ({ rows }: CustomTableProps) {
             <TableCell component="th" scope="row">
               {tickFormat(row.x)}
             </TableCell>
-            <TableCell align="right">{row.y}</TableCell>
+            <TableCell align="right">{row.y.toFixed(2)}</TableCell>
           </TableRow>
         ))}
       </TableBody>
