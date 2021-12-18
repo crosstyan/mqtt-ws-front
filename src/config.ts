@@ -1,6 +1,8 @@
 
+const host = document.location.hostname;
+const port = 8080
 export const config = {
-  addr: "localhost:8080",
+  addr: `${host}:${port}`,
   wsPath: "/ws",
   tmpPath: "/temperature",
   hmdPath: "/humidity",
