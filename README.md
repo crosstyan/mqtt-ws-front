@@ -14,7 +14,7 @@ I choose to use [garronej/tss-react](https://github.com/garronej/tss-react) to s
 
 ## Config
 
-You have to add `--openssl-legacy-provider` to `NODE_OPTIONS` environment variable if you're running Node.js 17 or higher. Here is how to do it in PowerShell. 
+You have to add `--openssl-legacy-provider` to `NODE_OPTIONS` environment variable if you're running Node.js 17 or higher. Here is how to do it in PowerShell.
 
 ```powershell
 $env:NODE_OPTIONS="--openssl-legacy-provider"
@@ -49,8 +49,6 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 ## Example
 
 ### CodeSandbox
-
-These wonderful examples are from [here](https://codesandbox.io/search?query=&page=1&configure%5BhitsPerPage%5D=12&refinementList%5Bnpm_dependencies.dependency%5D%5B0%5D=%40material-ui%2Fcore&refinementList%5Btemplate%5D%5B0%5D=create-react-app).
 
 - [Learn React & Material UI - CodeSandbox](https://codesandbox.io/s/m76rzooo3p)
 - [react-material-ui-pomodoro-tomatoe-timer - CodeSandbox](https://codesandbox.io/s/github/Caruso33/pomodoR/tree/master/)

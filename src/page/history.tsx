@@ -174,14 +174,14 @@ export function HistoryChart({ topic }: HistoryChartProps) {
       <Paper className={paperClass}>
         <Stack
           direction={{ xs: "column", md: "row" }}
-          spacing={{ xs: 1, md: 2 }}
+          spacing={{ xs: 2, md: 2 }}
         >
           <TextField
             id="date-start"
             label="Start"
             type="datetime-local"
             defaultValue={startDate}
-            sx={{ width: 250 }}
+            sx={{ width: {md:250, xs:"auto"} }}
             InputLabelProps={{
               shrink: true,
             }}
@@ -198,7 +198,7 @@ export function HistoryChart({ topic }: HistoryChartProps) {
             inputProps={{
               min: startDate,
             }}
-            sx={{ width: 250 }}
+            sx={{ width: {md:250, xs:"auto"} }}
             InputLabelProps={{
               shrink: true,
             }}
