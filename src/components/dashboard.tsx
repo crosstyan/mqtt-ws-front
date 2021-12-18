@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import clsx from "clsx";
-import { Point } from "./components/plot";
-import { Realtime as RealtimeChart } from "./page/realtime";
-import { HistoryChart } from "./page/history";
-import { useStyles } from "./styles"
-import { config } from "./config";
+import { Point } from "./plot";
+import { Realtime as RealtimeChart } from "../page/realtime";
+import { HistoryChart } from "../page/history";
+import { useStyles } from "../styles/styles"
+import { config } from "../config";
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
-import { getUniqueListBy } from "./utils/utils"
+import { getUniqueListBy } from "../utils/utils"
 
 
 import {

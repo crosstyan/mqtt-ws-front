@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import clsx from "clsx";
 import { Plot, Point } from "../components/plot";
 import { CustomTable } from "../components/table";
-import { useStyles } from "../styles"
+import { useStyles } from "../styles/styles"
 import Masonry from '@mui/lab/Masonry';
 import { config } from "../config";
 import { getUniqueListBy } from "../utils/utils";
