@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import clsx from "clsx";
 import { Plot, Point } from "../components/plot";
 import { CustomTable } from "../components/table";
+import { CustomAlert } from "../components/alert";
 import { useStyles } from "../styles/styles"
 import Masonry from '@mui/lab/Masonry';
 import { MQTTTopic } from "./realtime"
@@ -61,6 +62,7 @@ export function HistoryChart({ topic }: HistoryChartProps) {
   const [endDate, setEndDate] = useState<string | null>(null)
   const [page, setPage] = useState<number>(1)
   const [isMore, setIsMore] = useState<boolean>(false)
+  const [isConErr, setIsConErr] = useState<boolean>(false);
   // TODO: refactor this function to make it out of this component
   const queryFirstData = (topic: MQTTTopic, startDate: string, endDate: string | null = null) => {
     let queryPath: string
@@ -103,7 +105,11 @@ export function HistoryChart({ topic }: HistoryChartProps) {
         setData([{ x: Date.now(), y: 0 }])
         setIsMore(false)
       }
-    }))
+      setIsConErr(false)
+    })).catch(err => {
+      setIsConErr(true)
+      console.error(err)
+    })
   }
   // TODO: refactor this function to avoid copy and paste
   const queryMoreData = (topic: MQTTTopic, startDate: string, endDate: string | null = null) => {
@@ -170,54 +176,57 @@ export function HistoryChart({ topic }: HistoryChartProps) {
   }
 
   return (
-    <Masonry columns={{ xs: 1, md: 2 }} spacing={{ xs: 1, md: 2 }}>
-      <Paper className={paperClass}>
-        <Stack
-          direction={{ xs: "column", md: "row" }}
-          spacing={{ xs: 2, md: 2 }}
-        >
-          <TextField
-            id="date-start"
-            label="Start"
-            type="datetime-local"
-            defaultValue={startDate}
-            sx={{ width: {md:250, xs:"auto"} }}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            onChange={(e) => {
-              setStartDate(date => e.target.value)
-              queryFirstData(topic, e.target.value, endDate)
-            }}
-          />
-          <TextField
-            id="date-end"
-            label="End"
-            type="datetime-local"
-            defaultValue={endDate}
-            inputProps={{
-              min: startDate,
-            }}
-            sx={{ width: {md:250, xs:"auto"} }}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            onChange={(e) => {
-              setEndDate(date => e.target.value)
-              queryFirstData(topic, startDate, e.target.value)
-            }}
-          />
-        </Stack>
-      </Paper>
-      <Paper className={paperClass}>
-        <Plot data={data} format={(date) => {
-          return moment(date).format("HH:mm:ss")
-        }} />
-      </Paper>
-      <Paper className={paperClass}>
-        <CustomTable rows={data} />
-        <More topic={topic} />
-      </Paper>
-    </Masonry>
+    <React.Fragment>
+      <CustomAlert isErr={isConErr} sx={{ marginBottom: "1rem" }} text="HTTP connection error" />
+      <Masonry columns={{ xs: 1, md: 2 }} spacing={{ xs: 1, md: 2 }}>
+        <Paper className={paperClass}>
+          <Stack
+            direction={{ xs: "column", md: "row" }}
+            spacing={{ xs: 2, md: 2 }}
+          >
+            <TextField
+              id="date-start"
+              label="Start"
+              type="datetime-local"
+              defaultValue={startDate}
+              sx={{ width: { md: 250, xs: "auto" } }}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              onChange={(e) => {
+                setStartDate(date => e.target.value)
+                queryFirstData(topic, e.target.value, endDate)
+              }}
+            />
+            <TextField
+              id="date-end"
+              label="End"
+              type="datetime-local"
+              defaultValue={endDate}
+              inputProps={{
+                min: startDate,
+              }}
+              sx={{ width: { md: 250, xs: "auto" } }}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              onChange={(e) => {
+                setEndDate(date => e.target.value)
+                queryFirstData(topic, startDate, e.target.value)
+              }}
+            />
+          </Stack>
+        </Paper>
+        <Paper className={paperClass}>
+          <Plot data={data} format={(date) => {
+            return moment(date).format("HH:mm:ss")
+          }} />
+        </Paper>
+        <Paper className={paperClass}>
+          <CustomTable rows={data} />
+          <More topic={topic} />
+        </Paper>
+      </Masonry>
+    </React.Fragment>
   )
 }

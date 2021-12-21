@@ -2,10 +2,13 @@ import React, { useEffect, useState } from "react";
 import clsx from "clsx";
 import { Plot, Point } from "../components/plot";
 import { CustomTable } from "../components/table";
+import { CustomAlert } from "../components/alert";
 import { useStyles } from "../styles/styles"
 import Masonry from '@mui/lab/Masonry';
 import { config } from "../config";
 import { getUniqueListBy } from "../utils/utils";
+import { SxProps } from '@mui/system';
+import { Alert, Theme } from '@mui/material';
 
 
 
@@ -28,6 +31,7 @@ export function Realtime() {
   const paperClass = clsx(classes.paper);
   const [tmpData, setTmpData] = useState<Point[]>([{ x: Date.now(), y: 0 }]);
   const [hmdData, setHmdData] = useState<Point[]>([{ x: Date.now(), y: 0 }]);
+  const [isConErr, setIsConErr] = useState<boolean>(false);
   let tmpTemp: Point[] = [];
   let hmdTemp: Point[] = [];
   const PLOT_LENGTH = 10;
@@ -42,6 +46,10 @@ export function Realtime() {
   }
   useEffect(() => {
     const ws = new WebSocket(url);
+    ws.onerror = () => {
+      // https://stackoverflow.com/questions/25779831/how-to-catch-websocket-connection-to-ws-xxxnn-failed-connection-closed-be
+      setIsConErr(true);
+    }
     ws.onmessage = (event) => {
       const msg = event.data
       try {
@@ -81,7 +89,7 @@ export function Realtime() {
           })
         }
       } catch (e) {
-        console.error(e)
+        console.error("Parse Error: " + e)
       }
     }
     return () => {
@@ -89,23 +97,26 @@ export function Realtime() {
     }
   }, []);
   return (
-    <Masonry columns={{ xs: 1, md: 2 }} spacing={{ xs: 1, md: 2 }}>
-      <Paper className={paperClass}>
-        <Typography variant="h5" component="div" sx={titleStyle}>Temperature</Typography>
-        <Plot data={tmpData} />
-      </Paper>
-      <Paper className={paperClass}>
-        <Typography variant="h5" component="div" sx={titleStyle}>Temperature</Typography>
-        <CustomTable rows={tmpData} />
-      </Paper>
-      <Paper className={paperClass}>
-        <Typography variant="h5" component="div" sx={titleStyle}>Humidity</Typography>
-        <Plot data={hmdData} />
-      </Paper>
-      <Paper className={paperClass}>
-        <Typography variant="h5" component="div" sx={titleStyle}>Humidity</Typography>
-        <CustomTable rows={hmdData} />
-      </Paper>
-    </Masonry>
+    <React.Fragment>
+      <CustomAlert isErr={isConErr} sx={{marginBottom:"1rem"}} text="Websocket connection error"/>
+      <Masonry columns={{ xs: 1, md: 2 }} spacing={{ xs: 1, md: 2 }}>
+        <Paper className={paperClass}>
+          <Typography variant="h5" component="div" sx={titleStyle}>Temperature</Typography>
+          <Plot data={tmpData} />
+        </Paper>
+        <Paper className={paperClass}>
+          <Typography variant="h5" component="div" sx={titleStyle}>Temperature</Typography>
+          <CustomTable rows={tmpData} />
+        </Paper>
+        <Paper className={paperClass}>
+          <Typography variant="h5" component="div" sx={titleStyle}>Humidity</Typography>
+          <Plot data={hmdData} />
+        </Paper>
+        <Paper className={paperClass}>
+          <Typography variant="h5" component="div" sx={titleStyle}>Humidity</Typography>
+          <CustomTable rows={hmdData} />
+        </Paper>
+      </Masonry>
+    </React.Fragment>
   )
 }
