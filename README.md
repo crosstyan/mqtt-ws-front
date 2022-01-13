@@ -31,14 +31,13 @@ Modify [`src/config.ts`](src/config.ts) to configure API address and other stuff
 
 ## Available Scripts
 
+See also [Getting Started | Vite](https://vitejs.dev/guide/)
+
 In the project directory, you can run:
 
 ### `yarn start`
 
-Runs the app in the development mode.\
-Open [http://localhost:4200](http://localhost:4200) to view it in the browser.
-
-The default port can be configured by [`.env`](.env) file.
+Runs the app in the development mode. use `--port` to specify the port.
 
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
