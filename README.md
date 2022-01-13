@@ -1,6 +1,13 @@
-# Getting Started with Create React App
+# HQUCC
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app). You can find the backend in [here](https://github.com/crosstyan/mqtt-to-ws)
+See also [crosstyan/mqtt-to-ws](https://github.com/crosstyan/mqtt-to-ws)
+
+Migrate to vite from `create-react-app` for better performance. See also:
+
+- [Migrating a Create React App (CRA) application to Vite - Darragh ORiordan](https://www.darraghoriordan.com/2021/05/16/migrating-from-create-react-app-to-vite/)
+- [Migrating a Create React App project to Vite](https://darekkay.com/blog/create-react-app-to-vite/)
+- [alloc/vite-react-jsx: React 17's automatic JSX runtime for your entire bundle](https://github.com/alloc/vite-react-jsx)
+- [javascript - ReferenceError: React is not defined - Migrating from CRA to Vite and NX - Stack Overflow](https://stackoverflow.com/questions/70519656/referenceerror-react-is-not-defined-migrating-from-cra-to-vite-and-nx)
 
 ## MUI and Material-UI
 
